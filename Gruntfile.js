@@ -89,7 +89,7 @@ module.exports = function(grunt) {
       },
       build: {
         expand: true,
-        cwd: '<%= buildBase %>',
+        cwd: '<%= srcBase %>',
         src: ['**/*.js', '!**/*-sc.js', '!**/*.combo.debug.js','!**/*-min.js'],
         dest: '<%= buildBase %>',
         ext: '-min.js'
