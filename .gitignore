@@ -1,0 +1,9 @@
+.editorconfig
+node_modules/
+list.json
+*.swp
+.sass-cache/
+*.less
+*.css
+!build/**/*\-min.css
+.DS_Store
