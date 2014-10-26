@@ -1,0 +1,36 @@
+<% if(data) { %>
+  <% _.each(data,function(item){ %>
+  <div class="item">
+    <a class="seller">
+      <div class="seller-pic"><img class="J_lazyload" src="<% if(item.userImageUrl){ %><%= item.userImageUrl %>_<%= $.isRetina("80x80","40x40")%>Q50.jpg<% }else{ %>http://demo.com/avatar-80.png<% }%>" alt="" width="40" height="40" /></div>
+      <div class="seller-info">
+        <p class="name"><%= item.sellerNick %></p>
+        <p class="sub"><span class="time"><%= item.showTimeStr %></span> 来自<span class="geo"><%= item.lbs %></span></p>
+      </div>
+    </a>
+    <a class="link">
+      <div class="product">
+        <% if(item.imgUrlsList) { %>
+        <ul class="piclist clearfix style<%= item.imgUrlsList.length %>">
+          <% _.each(item.imgUrlsList,function(picitem,index){ %>
+          <li class="picitem" data-index="<%= index %>">
+            <img src="<%= picitem %><% if( item.imgUrlsList.length==2|| item.imgUrlsList.length==4) { %>_<%= $.isRetina("310x310","160x160")%>xzQ50.jpg<% }else{ %>_<%= $.isRetina("200x200","100x100")%>xzQ50.jpg<% } %>" alt="" width="<% if( item.imgUrlsList.length==2|| item.imgUrlsList.length==4) { %>146<% }else{ %>96<% } %>" height="<% if( item.imgUrlsList.length==2|| item.imgUrlsList.length==4) { %>146<% }else{ %>96<% } %>" data-origin="<%= picitem %>" />
+          </li>
+          <% }); %>
+        </ul>
+        <% } %>
+      </div>
+    
+      <p class="title"><%= item.title %></p>
+      <p class="price"><span class="yen">&yen;</span><%= (+item.price)/100 %></p>
+    </a>
+    
+    <div class="itembar">
+      <ul class="clearfix">
+        <li class="sns-comment J_comment_<%= item.itemId %>"><a ></a></li>
+        <li class="sns-like J_like_<%= item.itemId %>" data-key="<%= item.itemId %>"></li>
+      </ul>
+    </div>
+  </div>
+  <% }); %>
+<% } %>

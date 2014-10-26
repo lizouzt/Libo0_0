@@ -1,0 +1,31 @@
+{
+  "name": "elfer_dev_lib",
+  "version": "1.0.0",
+  "description": "dev",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:lizouzt/Libo.0_0.git"
+  },
+  "keywords": [
+    "lib"
+  ],
+  "author": "elfer",
+  "license": "Apache License V2.0",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cmd-concat": "~0.2.7",
+    "grunt-cmd-transport": "~0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-cssmin": "~0.6.1",
+    "grunt-contrib-handlebars": "~0.6.0",
+    "grunt-contrib-jst": "~0.5.1",
+    "grunt-contrib-less": "~0.5.0",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-watch": "~0.5.1"
+  }
+}

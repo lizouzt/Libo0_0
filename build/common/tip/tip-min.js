@@ -1,0 +1,2 @@
+/*! elfer_dev_lib 2014-10-23 */
+define(function(){var a,b='<div id="J_tip"><div class="content"></div> </div>',c={show:function(c){a||($(document.body).append(b),a=$("#J_tip")),a.find(".content").text(c),a.show()},hide:function(){a.hide("display")}};return c});

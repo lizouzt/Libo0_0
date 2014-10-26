@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta content="telephone=no,email=no" name="format-detection"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+	<meta name="keywords" content="css3 transition cubic-beizer bezierCurve">
+	<meta name="author" content="Tao.z">
+	<title>CSS3 Cubic Bezier</title>
+	<link rel="stylesheet" type="text/css" href="./../build/page/index-min.css">
+</head>
+<body>
+<h1 class="title">CSS3 Transition cubic-bezier</h1>
+<div class="coords">
+	<div>
+		<a class="node p0"></a>
+		<a class="node p1" id="drag_p1"></a>
+		<a class="node p2" id="drag_p2"></a>
+		<a class="node p3"></a>
+		<canvas id="bezierCurve"></canvas>
+	</div>
+</div>
+
+<div id="view">
+	<h2 id="clipBoard"></h2><div id="run" class="btn_go">Try</div>
+	<div id="J_box" class="box"></div>
+	<h2>linear</h2>
+	<div class="box linear"></div>
+	<h2>ease-in</h2>
+	<div class="box ease-in"></div>
+	<h2>ease-out</h2>
+	<div class="box ease-out"></div>
+	<h2>ease-in-out</h2>
+	<div class="box ease-in-out"></div>
+</div>
+<h2 class="footer">© 2014 Func Fun</h2>
+<script type="text/javascript" src="./../build/page/cubic/index.js"></script>
+</body>
+</html>
