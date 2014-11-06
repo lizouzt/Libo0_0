@@ -39,7 +39,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: '<%= srcBase %>',
-          src: ['**/*.less','!**/mod/*.less','!util/**/*.less'],
+          src: ['**/*.less','!common/*.less','!common/**/*.less','!**/mod/*.less','!mod/**/*.less','!mod/*.less','!util/**/*.less'],
           dest: '<%= buildBase %>',
           ext: '.css'
         }]
