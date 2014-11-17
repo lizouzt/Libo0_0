@@ -7,7 +7,10 @@
 	<meta name="keywords" content="css3 transition cubic-beizer bezierCurve">
 	<meta name="author" content="Tao.z">
 	<title>CSS3 Cubic Bezier</title>
-	<link rel="stylesheet" type="text/css" href="./../build/page/cubic/index-min.css">
+	<!-- <link rel="stylesheet" type="text/css" href="./../build/page/cubic/index-min.css"> -->
+	<style type="text/css">
+	html{font-size:14px}body{padding:0;margin:0}ul,li{list-style:none;margin:0;padding:0}h1,h2,h3,h4,h5,p{margin:0}img{border:0}input,img{vertical-align:middle}*{-webkit-tap-highlight-color:rgba(0,0,0,0)}.clearfix:before,.clearfix:after{display:table;content:"";line-height:0}.clearfix:after{clear:both}@-webkit-keyframes shine{0%{left:-40px}100%{left:40px}}@-moz-keyframes shine{0%{left:-40px}100%{left:40px}}@-o-keyframes shine{0%{left:-40px}100%{left:40px}}@keyframes shine{0%{left:-40px}100%{left:40px}}body{min-width:768px;width:100%}.title{font:bolder 32px/44px arial;text-align:center;margin:16px auto}.footer{color:#ccc;font:400 12px/44px arial;height:44px;overflow:hidden;text-align:center;word-spacing:3px;width:100%}.coords{float:left;margin:10px;position:relative}.coords>div{margin:0 auto;position:relative;width:300px}.node{background:#fff;border:1px solid #333;-webkit-border-radius:20px;-webkit-background-clip:padding-box;-moz-border-radius:20px;-moz-background-clip:padding;border-radius:20px;background-clip:padding-box;display:block;height:15px;position:absolute;width:15px;-webkit-transform:translate(-8px,-8px);-moz-transform:translate(-8px,-8px);-o-transform:translate(-8px,-8px);-ms-transform:translate(-8px,-8px);transform:translate(-8px,-8px)}.node.active{border:1px solid red}.p1,.p2{background:#00AEDB;z-index:10}.p2{background:red}canvas{border:1px solid #333;border-top:1px dashed #333;border-right:1px dashed #333;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none}#view{float:left;margin-left:32px}#view h2{display:inline-block;font:900 18px/18px arial}#view.active .box{left:250px}.btn_go{background-color:transparent;color:#000;display:inline-block;font:bolder 22px/22px arial;margin:10px 20px;padding:4px;text-decoration:overline;text-align:center;text-shadow:0 1px 4px rgba(0,0,0,.8);-webkit-transition:text-shadow .2s linear;-moz-transition:text-shadow .2s linear;-o-transition:text-shadow .2s linear;-ms-transition:text-shadow .2s linear;transition:text-shadow .2s linear}.btn_go.active{text-shadow:0 1px 1px rgba(0,0,0,.6)}.box{background-color:green;-webkit-border-radius:6px;-webkit-background-clip:padding-box;-moz-border-radius:6px;-moz-background-clip:padding;border-radius:6px;background-clip:padding-box;display:table-caption;height:44px;left:0;margin:10px 0;width:44px;position:relative;-webkit-transition:left 1s linear;-moz-transition:left 1s linear;-o-transition:left 1s linear;-ms-transition:left 1s linear;transition:left 1s linear}.linear{background-color:#ff8000;-webkit-transition-timing-function:linear;-moz-transition-timing-function:linear;-o-transition-timing-function:linear;transition-timing-function:linear}.ease-in{background-color:#0f0;-webkit-transition-timing-function:ease-in;-moz-transition-timing-function:ease-in;-o-transition-timing-function:ease-in;transition-timing-function:ease-in}.ease-out{background-color:#0ff;-webkit-transition-timing-function:ease-out;-moz-transition-timing-function:ease-out;-o-transition-timing-function:ease-out;transition-timing-function:ease-out}.ease-in-out{background-color:#8000ff;-webkit-transition-timing-function:ease-in-out;-moz-transition-timing-function:ease-in-out;-o-transition-timing-function:ease-in-out;transition-timing-function:ease-in-out}@media (max-device-width:768px),and (-webkit-max-device-width:768px),and (-moz-max-device-width:768px),and (-ms-max-device-width:768px),and (-o-max-device-width:768px){body{min-width:320px}.coords{margin:10px 3%;width:94%}#view{float:none;margin:16px auto;width:300px}}
+	</style>
 </head>
 <body>
 <h1 class="title">CSS3 Transition cubic-bezier</h1>
@@ -33,8 +36,137 @@
 	<h2>ease-in-out</h2>
 	<div class="box ease-in-out"></div>
 </div>
-<h2 class="footer">漏 2014 Func Fun</h2>
-<script type="text/javascript" src="./../build/common/drag/drag.js"></script>
-<script type="text/javascript" src="./../src/page/cubic/index.js"></script>
+<h2 class="footer">© 2014 Func Fun</h2>
+<script type="text/javascript">
+/*! elfer_dev_lib 2014-10-27 */
+var Drag=function(){function a(a){this.el="string"==typeof a.el?d(a.el):a.el,this.range=a.range||null,this.onstart=a.start||new Function,this.onmove=a.move||new Function,this.onend=a.end||new Function,this.action=!1,this.init()}var b="ontouchstart"in document,c=b?{StartEvent:"ontouchstart",MoveEvent:"ontouchmove",EndEvent:"ontouchend"}:{StartEvent:"onmousedown",MoveEvent:"onmousemove",EndEvent:"onmouseup"},d=function(a){return document.getElementById(a)},e=function(a){a?a.preventDefault():window.event.returnValue=!1},f=function(a){var c=y=0;if(b){var d=a.touches.item(0);c=d.pageX,y=d.pageY}else c=a.clientX,y=a.clientY;return{x:c,y:y}};return a.prototype={init:function(){this.el[c.StartEvent]=function(a){if(e(a),this.action)return!1;this.action=!0,this.startPoint=f(a);var b=this.el.offsetLeft,d=this.el.offsetTop;this.onstart(),document[c.MoveEvent]=function(a){e(a),this.nowPoint=f(a);var c=this.nowPoint.x-this.startPoint.x+b,g=this.nowPoint.y-this.startPoint.y+d;(!this.range||c>=this.range.x1&&c<=this.range.x2)&&(this.el.style.left=c+"px"),(!this.range||g>=this.range.y1&&g<=this.range.y2)&&(this.el.style.top=g+"px"),this.onmove()}.bind(this),document[c.EndEvent]=document.ontouchcancel=function(){document[c.EndEvent]=document.ontouchcancel=document[c.MoveEvent]=null,this.action=!1,this.onend()}.bind(this)}.bind(this)},bind:function(a,b){return function(){a.apply(b,arguments)}}},function(b){return new a(b)}}();
+
+$ = function(id){
+	return document.getElementById(id);
+}
+var docW = document.documentElement.clientWidth,
+	SIZE = docW > 320 ? 300 : (docW - 20),
+	style = document.createElement('style');
+
+style.type = 'text/css';
+style.innerText = '.p0 { left: 0; top: <%SIZE%>px; }.p1 {left: 50px; top: <%SIZE%>px; }.p2 { left: <%SIZE%>px; top: 150px; }.p3 { left: <%SIZE%>px; top: 0; }'.replace(/<%SIZE%>/gi, SIZE);
+document.head.appendChild(style);
+
+var $p1, $p2, $box, $clipBoard, ctx;
+
+function initApp(){
+	var canvas = $('bezierCurve');
+	canvas.width = SIZE;
+	canvas.height = SIZE;
+
+	ctx = canvas.getContext("2d");
+	$box = $("J_box");
+	$p1 = $("drag_p1");
+	$p2 = $("drag_p2");
+	$clipBoard = $('clipBoard');
+	
+	renderWrap();
+	bindEvent();
+}
+function bindEvent(){
+	Drag({
+		el:'drag_p1',
+		range: {x1: 0, y1: 0, x2: SIZE, y2: SIZE},
+		start: function(){
+			this.el.classList.add('active');
+		},
+		move: function(){
+			renderWrap();
+		},
+		end:function(e){
+			this.el.classList.remove('active');
+		}
+	});
+	Drag({
+		el:'drag_p2',
+		range: {x1: 0, y1: 0, x2: SIZE, y2: SIZE},
+		start: function(){
+			this.el.classList.add('active');
+		},
+		move: function(){
+			var subx = this.el.style.left.substring(0,this.el.style.left.length-2),
+				suby = this.el.style.top.substring(0,this.el.style.top.length-2);
+			renderWrap();
+		},
+		end:function(e){
+			this.el.classList.remove('active');
+		}
+	});
+	
+	$("run").onclick = function(e){
+		e.preventDefault();
+		var $btn = e.target, $view = $('view');
+		if(/active/.test($btn.className))
+			return
+		$btn.className += ' active';
+		$view.className = "active";
+		
+		setTimeout(function() {
+			$view.className = "";
+			$btn.className = 'btn_go';
+		}, 2000);
+	};
+}
+
+function setTransitionFn(val) {
+	var arr = ['-webkit-', '-moz-', '-ms-', '-o-', ''], text = '';
+	val = 'transition: left 1s ' + val + ';';
+	for(var i in arr)
+		text += arr[i] + val;
+	$box.setAttribute('style', text);
+}
+
+function adjustValue(val) {
+	val = val.toFixed(2);
+	val = val.toString().replace("0.", ".").replace("1.00", "1").replace(".00", "0");
+	return val;
+}
+
+function renderWrap() {
+	var p1 = {x: $p1.offsetLeft, y: $p1.offsetTop},
+		p2 = {x: $p2.offsetLeft, y: $p2.offsetTop};
+	
+	render(p1, p2);
+};
+
+function render(p1, p2) {
+	ctx.clearRect(0, 0, SIZE, SIZE);
+	
+	ctx.beginPath();
+	ctx.lineWidth = 3;
+	ctx.strokeStyle = "#000";
+    ctx.moveTo(0, SIZE);
+    ctx.bezierCurveTo(p1.x, p1.y, p2.x, p2.y, SIZE, 0);				
+	ctx.stroke();
+	ctx.closePath();
+
+	ctx.beginPath();
+	ctx.strokeStyle = "#ccc";
+	ctx.lineWidth = 1;
+
+	ctx.moveTo(0, SIZE);
+	ctx.lineTo(p1.x, p1.y);
+	ctx.stroke();
+	
+	ctx.moveTo(SIZE, 0);
+	ctx.lineTo(p2.x, p2.y);
+	ctx.stroke();
+	ctx.closePath();
+	
+	var vals = [adjustValue(p1.x / SIZE), adjustValue(1 - p1.y / SIZE), adjustValue(p2.x / SIZE), adjustValue(1 - p2.y / SIZE)];
+	var cubez = 'cubic-bezier(' + vals.join(',')+')'
+	$clipBoard.innerText = cubez;
+	setTransitionFn(cubez);
+}
+
+window.onload = initApp
+</script>
+<!-- <script type="text/javascript" src="./../build/common/drag/drag.js"></script> -->
+<!-- <script type="text/javascript" src="./../src/page/cubic/index.js"></script> -->
 </body>
 </html>
