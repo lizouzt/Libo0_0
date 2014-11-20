@@ -54,7 +54,7 @@ define(function(require){
 
     setQuora = function(opt){
       var html = tmpQuora;
-      html = html.replace(/<%=type%>/, opt.type).replace(/<%=style%>/, ('color:#' + opt.style)).replace(/<%=text%>/, opt.text);
+      html = html.replace(/<%=type%>/, opt.type).replace(/<%=color%>/, ('color:' + opt.color)).replace(/<%=text%>/, opt.text);
 
       if(!!opt.tip)
         html += '<p class="tip">' + opt.tip + '</p>';
@@ -66,7 +66,7 @@ define(function(require){
       var html = '';
       for(var i = 0, j = opts.length; i < j; i++){
         var opt = opts[i];
-        html += tmpBtn.replace(/<%=i%>/, i).replace(/<%=type%>/, opt.type).replace(/<%=style%>/, ('color:#' + opt.style)).replace(/<%=text%>/, opt.text);
+        html += tmpBtn.replace(/<%=i%>/, i).replace(/<%=type%>/, opt.type).replace(/<%=color%>/, ('color:' + opt.color)).replace(/<%=text%>/, opt.text);
         _nav.innerHTML = html;
 
         if(opt.type == 'btn'){
