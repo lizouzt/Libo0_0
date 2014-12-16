@@ -10,6 +10,16 @@ define(function (require){
 		_pdy = 0,       //previous dy
 		_hc = 0,        //hold count
 		_hcTimer = null,//hold counter 计时器
+		_IOSVersion = function(){
+		    var v = false;
+		    var agent = window.navigator.userAgent;
+		    if(agent && /iphone|ipad|ipod|itouch/i.test(agent)){
+		      	var r = agent.match(/OS\ (\d_\d)/);
+		      	v = !!r && r[1] ? r[1] : false;
+		    }
+		    return v;
+		}(),
+
 		/*
 		*维护绑定队列
 		*length: 绑定个数
@@ -72,7 +82,6 @@ define(function (require){
 	    **/
 	    isneedDecelerate = function(t, y){
 	    	var velocity = y / t;
-	      	console.log('_hc: ' + _hc);
 	      	if((_hc == 0 && Math.abs(velocity) > 0.174) || _hc < 2 && Math.abs(velocity) > 0.3)
 	      		return velocity;
 	      	else
@@ -95,7 +104,7 @@ define(function (require){
 
 			clearTouch = function(){
 				_tsp = null;
-				_tst = 0, 
+				_tst = 0,
 				_isScroll = true;
 				_dx = 0;
 				_dy = 0;
@@ -177,29 +186,39 @@ define(function (require){
 			    *计算弹性滚动滚了多远
 			    **/
 			};
-		    var ua = window.navigator.userAgent.toLowerCase();
 
-			/(ios|iphone|ipad|itouch)/g.test(ua) && /os 6_|os 7_0/g.test(ua) && function(){
-			    document.addEventListener('touchstart', handleEvent, false);
-			    document.addEventListener('touchmove', handleEvent, false);
-			    document.addEventListener('touchend', handleEvent, false);
-		    }();
+			document.addEventListener('touchstart', handleEvent, false);
+			document.addEventListener('touchmove', handleEvent, false);
+			document.addEventListener('touchend', handleEvent, false);
 		};
 
+		var publicBind = function(obj){
+			if(obj.constructor != Object)
+				return false;
+
+			Targs.push(obj);
+			_Running = true;
+		};
+		
 		bindEvent();
+		/********************
+		*IOS8 测试不支持sticky，还得查
+		*********************
+		if(!_IOSVersion || parseInt(_IOSVersion[0]) < 7){
+			bindEvent();
+		}else{
+			publicBind = function(obj){
+				!!obj && obj.targetEl && obj.targetEl.setAttribute('style', 'position:-webkit-sticky; position:sticky;');
+			}
+		}
+		***********************/
 
 		return {
 			/*
 			*绑定元素
-			*param: obj || {el: 参照元素, h: 触发位置，默认0, th: 目标元素距离参照元素顶部的距离, acb: 激活回调, dcb: 消除回调}
+			*param: obj || {el: 参照元素, targetEl: 目标元素[可以缺省], h: 触发位置，默认0, th: 目标元素距离参照元素顶部的距离, acb: 激活回调, dcb: 消除回调}
 			**/
-			bind: function(obj){
-				if(obj.constructor != Object)
-					return false;
-
-				Targs.push(obj);
-				_Running = true;
-			},
+			bind: publicBind,
 			/*
 			*接触元素绑定
 			*param: el || DomNode
