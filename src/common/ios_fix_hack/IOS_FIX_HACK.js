@@ -9,6 +9,7 @@ define(function (require){
 		_dy = 0,        //delta y
 		_pdy = 0,       //previous dy
 		_hc = 0,        //hold count
+		_hcTimer = null,//hold counter 计时器
 		/*
 		*维护绑定队列
 		*length: 绑定个数
@@ -71,7 +72,7 @@ define(function (require){
 	    **/
 	    isneedDecelerate = function(t, y){
 	    	var velocity = y / t;
-	      	
+	      	console.log('_hc: ' + _hc);
 	      	if((_hc == 0 && Math.abs(velocity) > 0.174) || _hc < 2 && Math.abs(velocity) > 0.3)
 	      		return velocity;
 	      	else
@@ -94,11 +95,14 @@ define(function (require){
 
 			clearTouch = function(){
 				_tsp = null;
+				_tst = 0, 
 				_isScroll = true;
 				_dx = 0;
 				_dy = 0;
 				_pdy = 0;
 				_hc = 0;
+
+				!!_hcTimer && clearInterval(_hcTimer);
 			},
 
 		    onTouchStart = function(e){
@@ -107,6 +111,17 @@ define(function (require){
 		    },
 
 		    onTouchMove = function(e){
+		    	if(!_tst)
+		    		return
+		    	else if(!_hc){
+		    		/*
+		    		*弥补TouchMove触发间隔手onscroll控制
+		    		**/
+		    		_hcTimer = setInterval(function(){
+		    			Math.abs(_pdy - _dy) < 3 && _hc++;
+		    		}, 200);
+		    	}
+
 		        fixHack();
 
 		        _dx = e.changedTouches[0].clientX - _tsp.X;
