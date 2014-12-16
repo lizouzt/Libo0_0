@@ -2,11 +2,13 @@ define(function (require){
 	var FH = function(){
 		var _Running = false,
 		_isScroll = true,
-		_tst = 0,
-		_tsp = null,
-		_top_ = 0,
-		_dx = 0,
-		_dy = 0,
+		_tst = 0,		//touch start time
+		_tsp = null,	//touch start point
+		_top_ = 0,      //scrollTop
+		_dx = 0,        //delta x
+		_dy = 0,        //delta y
+		_pdy = 0,       //previous dy
+		_hc = 0,        //hold count
 		/*
 		*维护绑定队列
 		*length: 绑定个数
@@ -41,34 +43,51 @@ define(function (require){
 			}
 		};
 
-		var fixHack = function(){
-			/*
-			*loop
-			*处理绑定元素队列中
-			**/
+		/*
+		*loop
+		*处理绑定元素队列中
+		**/
+		var fixHack = function(alfa){
+			alfa = alfa || 0;
+
 	        for(var i = 0, l = Targs.length; i < l; i++){
 	        	var tar = Targs[i],
-	        	rect = tar.el.getBoundingClientRect();
+	        	rect = tar.el.getBoundingClientRect().top + alfa;
 
-		        if(rect.top <= tar.h - tar.th && !tar._hstate){
+	        	// alfa != 0 && log((rect <= tar.h - tar.th) + '****' + rect + '****'+alfa);
+		        if(rect <= tar.h - tar.th && !tar._hstate){
 					tar.acb();
 					tar._hstate = true;
-		        }else if(rect.top > tar.h - tar.th && !!tar._hstate){
+		        }else if(rect > tar.h - tar.th && !!tar._hstate){
 		            tar.dcb();
 					tar._hstate = false;
 		        }
 	        }
 	    },
 
+	    /*
+	    *计算是否会做弹性滚动
+	    *params {t,y} || t：touchmove时长，y: touchmove距离
+	    **/
 	    isneedDecelerate = function(t, y){
-	    	var velocity = Math.abs(y) / t;
-	      	log(velocity);
+	    	var velocity = y / t;
+	      	
+	      	if((_hc == 0 && Math.abs(velocity) > 0.174) || _hc < 2 && Math.abs(velocity) > 0.3)
+	      		return velocity;
+	      	else
+	      		return false;
 	    },
-
-	    dampJudge = function(){
-
+	    /*
+	    *计算弹性滚动距离
+	    *params {v：速率}
+	    **/
+	    dampJudge = function(v){
+	    	var damp = v * 750;
+	    	fixHack(damp)
 	    },
-
+	    /*
+	    *事件绑定
+	    **/
 		bindEvent = function(){
 			var self = this,
 			ons = window.onscroll,
@@ -76,6 +95,10 @@ define(function (require){
 			clearTouch = function(){
 				_tsp = null;
 				_isScroll = true;
+				_dx = 0;
+				_dy = 0;
+				_pdy = 0;
+				_hc = 0;
 			},
 
 		    onTouchStart = function(e){
@@ -92,16 +115,20 @@ define(function (require){
 		  		var mh = Math.abs(_dx) > Math.abs(_dy);
 
 		  		mh && (_isScroll = false);
+
+		  		Math.abs(_pdy - _dy) < 3 && _hc++;
+
+		  		_pdy = _dy;
 		    },
 
 		    onTouchEnd = function(e){
 		    	if (!!_isScroll) {
 		    		var dt = e.timeStamp - _tst;
 
-		      		isneedDecelerate(dt, _dy);
+		      		var isneed = isneedDecelerate(dt, _dy);
 
-		      		if(!!false){
-		        		dampJudge(timer);
+		      		if(!!isneed){
+		        		dampJudge(isneed);
 		      		}
 
 		      		_top_ = document.body.scrollTop;
@@ -124,17 +151,20 @@ define(function (require){
 		        }
 		    };
 
+		    /*
+		    *IOS6、7
+		    **/		    
 			window.onscroll = function(){
 			    !!ons && ons();
 			    _Running && fixHack();
 
 			    /*
-			    *hack计算弹性滚动滚了多远
+			    *计算弹性滚动滚了多远
 			    **/
-			    log(document.body.scrollTop - _top_);
 			};
-			
-			/(ios|iphone|ipad|itouch)/g.test(window.navigator.userAgent.toLowerCase()) && function(){
+		    var ua = window.navigator.userAgent.toLowerCase();
+
+			/(ios|iphone|ipad|itouch)/g.test(ua) && /os 6_|os 7_0/g.test(ua) && function(){
 			    document.addEventListener('touchstart', handleEvent, false);
 			    document.addEventListener('touchmove', handleEvent, false);
 			    document.addEventListener('touchend', handleEvent, false);
