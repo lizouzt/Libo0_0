@@ -171,9 +171,9 @@ var cheater = function(){
 						return function(obj){
 							var song = favorInfo.songList[id];
 
-							var rateObj = obj.data.data.flac;
-							if(!rateObj)
-								rateObj = obj.data.data['320'];
+							// var rateObj = obj.data.data.flac;
+							// if(!rateObj)
+							var rateObj = obj.data.data['320'];
 
 							!!rateObj && !!song && (song.flacLink = uri_songLink.replace(/\{songIds\}/, id).replace(/\{rate\}/, rateObj.rate).replace(/\{format\}/, rateObj.format));
 						}
