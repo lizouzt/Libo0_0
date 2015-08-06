@@ -1,0 +1,110 @@
+#J_p_pop {
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+}
+#J_p_pop.pp_tip .pp_quora {
+  line-height: 20px;
+  min-height: 100px;
+}
+#J_p_pop.pp_tip .pp_nav {
+  display: none;
+}
+#J_p_pop a {
+  text-decoration: none;
+}
+#J_p_pop .pp_wrapper {
+  position: relative;
+  top: 50%;
+  left: 50%;
+}
+#J_p_pop .pp_box {
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 0 2px #ccc inset;
+  height: auto;
+  left: -106px;
+  overflow: hidden;
+  position: relative;
+  top: -65px;
+  width: 214px;
+}
+#J_p_pop .pp_quora {
+  color: #3d4245;
+  font-size: 14px;
+  padding: 30px 20px 0;
+  text-align: center;
+  min-height: 64px;
+}
+#J_p_pop .pp_quora .text {
+  line-height: 24px;
+}
+#J_p_pop .pp_quora .tip {
+  color: #aaa;
+  font-size: 12px;
+  max-height: 44px;
+  margin: 12px 24px;
+  overflow: hidden;
+}
+#J_p_pop .pp_quora i {
+  background: transparent url("//activity-codoon.b0.upaiyun.com/supor_mt/2fd830f1-c85f-4dba-bb42-ece5fbde81c6") no-repeat center;
+  background-size: 44px;
+  display: inline-block;
+  height: 24px;
+  left: -12px;
+  position: relative;
+  top: 6px;
+  width: 24px;
+}
+#J_p_pop .pp_quora i.error {
+  background-position: -10px -253px;
+}
+#J_p_pop .pp_quora i.warn {
+  background-position: -10px -253px;
+}
+#J_p_pop .pp_quora i.success {
+  background-position: -10px -218px;
+}
+#J_p_pop .pp_quora i.loading {
+  background: transparent url(//activity-codoon.b0.upaiyun.com/supor_mt/9f29241f-24c4-4006-beca-2fff12429ebb) no-repeat 50% 50%;
+  background-size: 24px;
+}
+#J_p_pop .pp_nav {
+  box-shadow: 0 0 1px 0 #dedede;
+  display: -webkit-flex;
+  display: flex;
+  height: 36px;
+  padding: 0;
+  width: 100%;
+}
+#J_p_pop .pp_btn {
+  border-right: 1px solid #dedede;
+  color: #3d4245;
+  float: left;
+  height: 36px;
+  cursor: pointer;
+  line-height: 36px;
+  text-align: center;
+  width: 100%;
+  -webkit-flex: auto 1 1;
+  -webkit-transition: all 0.2s ease-in;
+}
+#J_p_pop .pp_btn:last-child {
+  border-right: none;
+}
+#J_p_pop .pp_btn:hover {
+  box-shadow: 0 0 2px 1px #bebebe;
+}
+#J_p_pop .pp_btn:active,
+#J_p_pop .pp_btn:visited {
+  box-shadow: 0 0 0px 1px #bebebe;
+  line-height: 40px;
+}
+#J_p_pop.show {
+  display: block;
+}

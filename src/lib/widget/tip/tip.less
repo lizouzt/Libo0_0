@@ -1,0 +1,22 @@
+@import "../../../../deps/lesshat/build/lesshat.less";
+
+#J_tip {
+    left:50%;
+    padding: 6px 12px;
+    position: fixed;
+    top:30%;
+    z-index: 999;
+    &.hide{
+        display: none;
+    }
+    .tip_content {
+        margin-left: -50%;
+        background-color: rgba(0,0,0,.8);
+        padding: 3px 10px;
+        .border-radius(3px);
+        color: #FFF;
+        line-height: 2;
+        float: left;
+        text-align: center;
+    }
+}

@@ -1,11 +1,30 @@
+'use strict';
 module.exports = function(grunt) {
-
-  // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    tempBase:"temp",
-    srcBase: "src",
-    buildBase: "build",
+    tempBase: 'temp',
+    srcBase: 'src',
+    buildBase: 'build',
+    less: {
+      compile: {
+        files: [{
+          expand: true,
+          cwd: '<%= srcBase %>',
+          src: ['lib/**/*.less','p/**/*.less','!lib/*.less','!lib/deps/**/*.less'],
+          dest: '<%= buildBase %>',
+          ext: '.css'
+        }]
+      }
+    },
+    cssmin: {
+      combine: {
+        expand: true,
+        cwd: '<%= buildBase %>',
+        src: ['**/*.css', '!**/*-min.css', '!lib/deps/**/*.less'],
+        dest: '<%= buildBase %>',
+        ext: '.css'
+      }
+    },
     jst:{
       complie:{
         options:{
@@ -20,8 +39,36 @@ module.exports = function(grunt) {
         files:[{
           expand: true,
           cwd: '<%= srcBase %>',
-          src: ['**/*-udt.html'],
+          src: ['**/*.jst.html'],
           dest: '<%= srcBase %>',
+          ext: '.jst.js'
+        }]
+      }
+    },
+    transport: {
+      options: {
+        debug: false,
+        paths:['src']
+      },
+      trans: {
+        expand: true,
+        cwd: '<%= srcBase %>',
+        src: ['lib/**/*.js', '!lib/**/*-min.js', '!lib/deps/**/*.js'],
+        dest: '<%= tempBase %>'
+      }
+    },
+    concat: {
+      mod: {
+        options: {
+          include: 'all',
+          paths: ['temp'],
+          separator: ';',
+        },
+        files: [{
+          expand: true,
+          cwd: '<%= tempBase %>',
+          src: ['lib/**/*.js','!lib/**/*.jst.js','!lib/deps/*.js'],
+          dest: '<%= tempBase %>',
           ext: '.js'
         }]
       }
@@ -29,91 +76,54 @@ module.exports = function(grunt) {
     copy: {
       main: {
         expand: true,
-        cwd: '<%= srcBase %>',
-        src: ['common/**/*.js','**/*.jpg','**/*.png', '**/*.eot', '**/*.svg', '**/*.ttf', '**/*.woff'],
-        dest: '<%= buildBase %>'
-      }
-    },
-    less: {
-      compile: {
-        files: [{
-          expand: true,
-          cwd: '<%= srcBase %>',
-          src: ['**/*.less','!common/*.less','!common/**/*.less','!**/mod/*.less','!mod/**/*.less','!mod/*.less','!util/**/*.less'],
-          dest: '<%= buildBase %>',
-          ext: '.css'
-        }]
-      }
-    },
-    cssmin: {
-      combine: {
-        expand: true,
-        cwd: '<%= buildBase %>',
-        src: ['**/*.css', '!**/*-min.css'],
+        cwd: '<%= tempBase %>',
+        src: ['lib/**/*.js','!**/mod/'],
         dest: '<%= buildBase %>',
-        ext: '-min.css'
-      }
-    },
-    transport: {
-      options: {
-        debug: false,
-        paths:['src'],
-        alias:{
-          "underscore":"common/underscore"
-        }
-      },
-      trans: {
-        expand: true,
-        cwd: '<%= srcBase %>',
-        src: ['**/*.js', '!**/*-min.js','!common/**/*.js'],
-        dest: '<%= tempBase %>'
-      }
-    },
-    concat: {
-      page: {
-        options: {
-          include: 'relative'
-        },
-        files: [{
-          expand: true,
-          cwd: '<%= tempBase %>',
-          src: ['**/*.js','!**/mod/*.js','!util/**/*.js', '!**/*-min.js'],
-          dest: '<%= buildBase %>',
-          ext: ".js"
-        }]
+        ext: '.org.js'
       }
     },
     uglify: {
       options: {
-        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n /**********************************************\n * Handcrafted by <%= pkg.author.name %>, <%= pkg.author.url %>\n **********************************************/\n'
       },
       build: {
         expand: true,
-        cwd: '<%= srcBase %>',
-        src: ['**/*.js', '!**/*-sc.js', '!**/*.combo.debug.js','!**/*-min.js'],
+        cwd: '<%= buildBase %>',
+        src: ['**/*.org.js','!**/*-min.js','!lib/deps/**/*.js'],
         dest: '<%= buildBase %>',
-        ext: '-min.js'
+        ext: '.js'
       }
     },
     clean:{
       temp:{
-        src:"<%= tempBase %>"
+        src:'<%= tempBase %>'
       }
     },
+
+    browserSync: {
+      files: ['./build/**/*.css','./srlib/**/*.js'],
+      options: {
+        watchTask: true,
+        server: {
+          baseDir: "./",
+          index: "./html/index.html"
+        },
+      }
+    },
+
     watch:{
       options: {
-
+        ignoreInitial: true,
+        ignored: ['*.txt','*.json']
       },
       assets:{
-        // cwd: '<%= srcBase %>',
-        files: ['**/index/mod/*-udt.html','**/index/index.js','**/index/index.less','**/yanghuo/mod/*-udt.html','**/yanghuo/yanghuo.js','**/yanghuo/yanghuo.less','**/src/**/*.less','**/src/**/*.js'],
-        // dest: '<%= srcBase %>',
-        tasks: ['copy','jst', 'transport', 'concat', 'less', 'cssmin','clean','clean']
+        files: ['./srlib/**/*.less','./srlib/**/*.jst.html'],
+        tasks: ['less','jst']
       }
-    }
+    },
   });
 
-  // Load the plugin that provides the "uglify" task.
+  grunt.loadNpmTasks('grunt-browser-sync');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
@@ -124,12 +134,30 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jst');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.registerTask('default', [
+    'jst', 
+    'transport', 
+    'concat',
+    'copy',
+    'uglify',
+    'less', 
+    'cssmin', 
+    'clean'
+  ]);
 
-  // Default task(s).
-  grunt.registerTask('default', ['copy','jst', 'transport', 'concat', 'less', 'cssmin', 'uglify','clean']);
+  grunt.registerTask('sync', ['browserSync','watch']);
 
-  grunt.registerTask('js', ['jst', 'transport', 'concat','clean']);
+  grunt.registerTask('js', [
+    'jst',
+    'transport',
+    'concat',
+    'copy',
+    'clean'
+  ]);
 
-  grunt.registerTask('css', ['less', 'cssmin','clean']);
-
+  grunt.registerTask('css', [
+    'less', 
+    'cssmin',
+    'clean'
+  ]);
 };
