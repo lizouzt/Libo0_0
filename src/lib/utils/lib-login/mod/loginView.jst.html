@@ -1,20 +1,23 @@
-<div id="j-l-l-view" class="l-l-view">
-    <form name="login[form]" method= action="/login">
-        <!--内容区-->
-        <div class="llv-shadow">
-            <div class="llv-row">
-                <input type="text" placeholder="用户" name="login[name]" required="required" autocomplete="off">
+<div id="j-l-l-view" class="l-l-view <%= obj.hideBG ? 'nobg' : '' %>">
+    <div class="llv-wrapper">
+        <form name="login[form]" method= action="/login">
+            <!--内容区-->
+            <div class="llv-shadow">
+                <div class="llv-row">
+                    <input type="text" placeholder="用户" name="login[name]" required="required" autocapitalize="off" autocorrect="off" autocomplete="off">
+                </div>
+                <div class="llv-row">
+                    <input type="text" placeholder="密码" name="login[pwd]" required="required" autocapitalize="off" autocorrect="off" autocomplete="off">
+                    <input type="hidden" name="login[hide]">
+                </div>
             </div>
-            <div class="llv-row">
-                <input type="password" placeholder="密码" name="login[pwd]" required="required" autocomplete="off">
+            <!--按钮区-->
+            <div class="llv-shadow">
+                <button class="llv-submit" type="submit">
+                    <span class="btn-login">登录</span>
+                </button>
+                <div class="llv-tips">xxxxxx</div>
             </div>
-        </div>
-        <!--按钮区-->
-        <div class="llv-shadow">
-            <button class="llv-submit" type="submit">
-                <span class="btn-login">登录</span>
-            </button>
-            <div class="llv-tips">xxxxxx</div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>

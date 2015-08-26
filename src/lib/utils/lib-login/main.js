@@ -49,8 +49,8 @@ define([
             
         },
         /*渲染登陆视图*/
-        renderLoginView = function(){
-            document.body.insertAdjacentHTML('beforeEnd', tpl_login({}));
+        renderLoginView = function(opts){
+            document.body.insertAdjacentHTML('beforeEnd', tpl_login(opts));
             el_login = document.getElementById('j-l-l-view');
             el_form = document.forms['login[form]'];
             el_tips = el_login.querySelector('.llv-tips');
@@ -78,13 +78,23 @@ define([
         *登陆操作绑定
         **/
         bindLoginView = function(){
+            var el_pwd = el_form.querySelector('input[name="login[pwd]"]');
+            el_pwd.onfocus = function(){
+                setTimeout(function () {
+                    el_pwd.type = 'password';
+                }, 50);
+            };
+            el_pwd.onblur = function(){
+                !this.value && (this.type = 'text');
+            };
+
             el_form.onsubmit = function(e){
                 var info = loginInfoCheck();
                 e.preventDefault();
                 if (info && !op_block) {
                     op_block = true;
                     lib.api.request({
-                        api: 'user.login',
+                        api: 'api.user.login',
                         dataType: 'json',
                         data: info,
                         type: 'POST',
@@ -131,10 +141,11 @@ define([
             showFailTips(err.msg || '登录失败请重试！');
         };
 
-        return function(){
-            el_login = document.getElementById('j-l-l-view') || renderLoginView();
+        return function(opts){
+            el_login = document.getElementById('j-l-l-view') || renderLoginView(opts);
             el_login.classList.remove('hide');
             el_login.classList.add('active');
+            opts.hideBG ? el_login.classList.add('nobg') : el_login.classList.remove('nobg');
         }
     })(),
 
@@ -171,12 +182,14 @@ define([
     *调用登陆，登陆成功之后跳转到指定地址或当前页面
     * @param [Function|Object] opts
     * @param [object] context
+    * @param [object] viewset
     * 暂定支持登陆回调函数、登陆跳转、登陆刷新操作
     * 默认登陆成功不进行任何操作
     * 跳转 {targetUrl: url, [context: this]}
     * 刷新 {cbType: "refresh"}
     **/
-    _goLogin = function(opts, context){
+    _goLogin = function(opts, context, viewset){
+        var viewset = viewset || {};
         if (typeof opts == 'function') {
             _callBack = opts;
             _context = context;
@@ -195,7 +208,7 @@ define([
             _context = null;
         }
 
-        callLogin(opts);
+        callLogin(viewset);
     },
     /*
     *当前用户退出所有登陆状态
