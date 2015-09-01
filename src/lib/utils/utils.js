@@ -147,7 +147,7 @@
         : string;
     }
 
-    var _ = root._ || {};
+    var _ = window._ || {};
     _.escape = _.escape || window.escape || escape;
     _.unescape = _.unescape || window.unescape || unescape;
   })();
