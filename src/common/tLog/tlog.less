@@ -1,0 +1,232 @@
+@fs_msg: 12px;
+@fs_head: 14px;
+@cl_msg: #333;
+@cl_head: #999;
+@cl_act: #fff;
+@t_bdc: #ccc;
+
+@alerticon: "";
+
+#t_log{
+    background-color: #fff;
+    border-top: 1px solid rgba(0,0,0,.3);
+    bottom: 0;
+    color: @cl_head;
+    font-size: @fs_head;
+    height: 20%;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 9999;
+    &.huge{
+        height: 100%;
+    }
+    &.normal{
+        height: 40%;
+    }
+    &.small{
+        height: 20%;
+    }
+    &.up{
+        border-bottom: 1px solid @t_bdc;
+        top: 0;
+        .t_box{
+            border-bottom: none;
+        }
+    }
+    &.hide{
+        display: block;
+        height: 0;
+        .t_holder{
+            display: block;
+        }
+        .t_nav, .t_box{
+            display: none;
+        }
+    }
+    .t_holder{
+        top: -40px;
+    }
+}
+.t_nav{
+    border-bottom: 1px solid rgba(0,0,0,.15);
+    display: flex;
+    display: -webkit-flex;
+    height: 20px;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    -webkit-user-select: none;
+    .t_tab{
+        -webkit-flex-grow: 1;
+        -webkit-flex-shrink: 1;
+        -webkit-flex-basis: auto;
+        height: 20px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .t_ctrl{
+        border: 1px solid #bcbcbc;
+        border-bottom: none;
+        border-top: none;
+        -webkit-flex-basis: 80px;
+        -webkit-flex-grow: 0;
+        -webkit-flex-shrink: 0;
+        height: 20px;
+    }
+}
+
+.t_holder{
+    background: transparent url(@alerticon) center no-repeat;
+    background-size: 21px;
+    background-position-y: -43px;
+    height: 21px;
+    position: absolute;
+    right: 0;
+    width: 44px;
+    &.warn{
+        background-position-y: 0;
+    }
+    &.error{
+        background-position-y: -21px;
+    }
+    &.lamp{
+        -webkit-animation: alert 1s infinite;
+    }
+}
+.t_btn{
+    border-radius: 10px;
+    float: left;
+    -webkit-flex-basis: 40px;
+    -webkit-flex-grow: 0;
+    -webkit-flex-shrink: 0;
+    line-height: 16px;
+    margin: 2px 0;
+    text-align: center;
+    width: 50%;
+    &:hover{
+        background-color: rgba(220,220,220,.5);
+    }
+}
+.t_type{
+    border-radius: 10px;
+    float: left;
+    height: 16px;
+    line-height: 16px;
+    list-style: none;
+    margin: 2px 1%;
+    text-align: center;
+    width: 31%;
+    &.active{
+        background-color: rgba(110,110,110,.5);
+        color: @cl_act;
+    }
+    &:hover{
+        background-color: rgba(220,220,220,.5);
+    }
+}
+.t_box{
+    border-bottom: 21px solid #000;
+    box-sizing: border-box;
+    height: 100%;
+    overflow-y: auto;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    &.all{
+        .t_item{
+            display: block;
+        }
+    }
+    &.errors{
+        .t_item[data-type="errors"]{
+            display: block;
+        }
+    }
+    &.logs{
+        .t_item[data-type="logs"]{
+            display: block;
+        }
+    }
+}
+.t_item{
+    border-bottom: 1px solid rgba(0,0,0,.1);
+    color: @cl_msg;
+    display: none;
+    font-size: @fs_msg;
+    font-weight: 100;
+    height: 20px;
+    line-height: 20px;
+    overflow: hidden;
+    width: 100%;
+    &[data-type="error"]{
+        color: red;
+    }
+    &:hover{
+        background-color: rgba(220,220,220,.2);
+    }
+    .t_icon{
+        display: block;
+        background: transparent url(http://demo.com/TB1LGNKFpXXXXchoFXXLK6MUVXX-42-1280.png) no-repeat center;
+        background-size: 21px;
+        background-position: 0 -446px;
+        float: left;
+        height: 20px;
+        width: 20px;
+        -webkit-transform-origin: center;
+    }
+    &.t_v_obj.unfold{
+        .tvo_p{
+            display: block;
+            text-indent: 24px;
+        }
+    }
+    .t_msg{
+        color: darkred;
+        display: block;
+        height: 20px;
+        margin-left: 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+    }
+    em{
+        color: purple;
+        font-family: "Helvetica Neve" "黑体" cursive;
+        margin-right: 6px;
+    }
+    .tt_obj{
+        color: @cl_msg;
+    }
+    .t_val{
+        color: darkred;
+        &:after{
+            content: ",";
+        }
+    }
+    .tvo_p:last-child{
+        .t_val:after{
+            content: "";
+        }
+    }
+}
+.unfold{
+    height: auto;
+    .t_icon{
+        -webkit-transform: rotate3d(0,0,1,90deg);
+    }
+    .t_msg{
+        height: auto;
+    }
+}
+
+@keyframes alert{
+    0%  {-webkit-filter: brightness(.5);}
+    50% {-webkit-filter: brightness(1.5);}
+    100%{-webkit-filter: brightness(.5);}
+}
+
+@-webkit-keyframes alert{
+    0%  {-webkit-filter: brightness(.5);}
+    50% {-webkit-filter: brightness(1.5);}
+    100%{-webkit-filter: brightness(.5);}
+}

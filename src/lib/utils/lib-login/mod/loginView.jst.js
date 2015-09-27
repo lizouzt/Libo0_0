@@ -1,0 +1,5 @@
+define(function(){
+
+  return function(obj) {obj || (obj = {});var __t, __p = '', __e = _.escape;with (obj) {__p += '<div id="j-l-l-view" class="l-l-view">\n    <form name="login[form]" method= action="/login">\n        <!--内容区-->\n        <div class="llv-shadow">\n            <div class="llv-row">\n                <input type="text" placeholder="用户" name="login[name]" required="required" autocomplete="off">\n            </div>\n            <div class="llv-row">\n                <input type="password" placeholder="密码" name="login[pwd]" required="required" autocomplete="off">\n            </div>\n        </div>\n        <!--按钮区-->\n        <div class="llv-shadow">\n            <button class="llv-submit" type="submit">\n                <span class="btn-login">登录</span>\n            </button>\n            <div class="llv-tips">xxxxxx</div>\n        </div>\n    </form>\n</div>';}return __p}
+
+});

@@ -1,0 +1,113 @@
+@icon: "../../../../statics/popbox.png";
+
+#J_p_pop{
+    background-color: rgba(0,0,0,.5);
+    display: none;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+    &.pp_tip{
+        .pp_quora{
+            line-height: 20px;
+            min-height: 100px;
+        }
+        .pp_nav{
+            display: none;
+        }
+    }
+    a{
+        text-decoration: none;
+    }
+    .pp_wrapper{
+        position: relative;
+        top: 50%;
+        left: 50%;
+    }
+    .pp_box{
+        border-radius: 4px;
+        background-color: #fff;
+        box-shadow: 0 0 2px #ccc inset;
+        height: auto;
+        left: -106px;
+        overflow: hidden;
+        position: relative;
+        top: -65px;
+        width: 214px;
+    }
+    .pp_quora{
+        color: #3d4245;
+        font-size: 14px;
+        padding: 30px 20px 0;
+        text-align: center;
+        min-height: 64px;
+        .text{
+            line-height: 24px;
+        }
+        .tip{
+            color: #aaa;
+            font-size: 12px;
+            max-height: 44px;
+            margin: 12px 24px;
+            overflow: hidden;
+        }
+        i{
+            background: transparent url(@icon) no-repeat center;
+            background-size: 44px;
+            display: inline-block;
+            height: 24px;
+            left: -12px;
+            position: relative;
+            top: 6px;
+            width: 24px;
+            &.error{
+                background-position: -10px -253px;
+            }
+            &.warn{
+                background-position: -10px -253px;    
+            }
+            &.success{
+                background-position: -10px -218px;
+            }
+            &.loading{
+                background: transparent url(//activity-codoon.b0.upaiyun.com/supor_mt/9f29241f-24c4-4006-beca-2fff12429ebb) no-repeat 50% 50%;
+                background-size: 24px;
+            }
+        }
+    }
+    .pp_nav{
+        box-shadow: 0 0 1px 0 #dedede;
+        display: -webkit-flex;
+        display: flex;
+        height: 36px;
+        padding: 0;
+        width: 100%;
+    }
+    .pp_btn{
+        border-right: 1px solid #dedede;
+        color: #3d4245;
+        float: left;
+        height: 36px;
+        cursor: pointer;
+        line-height: 36px;
+        text-align: center;
+        width: 100%;
+        -webkit-flex: auto 1 1;
+        -webkit-transition: all .2s ease-in;
+        &:last-child{
+            border-right: none;
+        }
+        &:hover{
+            box-shadow: 0 0 2px 1px #bebebe;
+        }
+        &:active,&:visited{
+            box-shadow: 0 0 0px 1px #bebebe;
+            line-height: 40px;
+        }
+    }
+    &.show{
+        display: block;
+    }
+}

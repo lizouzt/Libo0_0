@@ -1,0 +1,76 @@
+@import "../../../config.less";
+
+@cl-shadow: #A5A2A2;
+@cl-border: #e3e3e3;
+@cl-blue: rgb(82, 158, 204);
+
+*{
+    -webkit-tap-highlight-color: rgba(26,26,26,.300781);
+}
+.l-l-view{
+    color: gray;
+    font: 100 16px/1.4 "Helvetica Neue","HelveticaNeue",Helvetica,Arial,sans-serif;
+    left: 50%;
+    padding: 0;
+    position: fixed;
+    top: 50%;
+    z-index: 10;
+    &.hide{
+        display: none;
+    }
+    form{
+        .border-radius(4px);
+        margin: -50% 0 0 -50%;
+        width: 260px;
+    }
+}
+.llv-shadow{
+    background-color: #fff;
+    .box-shadow(0 0 20px 0 @cl-shadow);
+    margin-top: 10px;
+}
+.llv-row{
+    border-top: 1px solid @cl-border;
+    vertical-align: baseline;
+    position: relative;
+    zoom: 1;
+    &:first-child{
+        border-top: none;
+    }
+    
+    input{
+        background: 0;
+        border: none;
+        .border-radius(4px);
+        .box-sizing(border-box);
+        display: block;
+        outline: none;
+        padding: 11px 10px 11px 13px;
+        width: 100%;
+        &.error{
+            
+        }
+    }
+}
+
+.llv-submit{
+    background-color: @cl-blue;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    height: 44px;
+    line-height: 44px;
+    outline: none;
+    width: 100%;
+}
+.llv-tips{
+    color: red;
+    display: none;
+    font-size: 14px;
+    overflow: hidden;
+    padding: 0 6px;
+    text-align: center;
+    &.active{
+        display: block;
+    }
+}
