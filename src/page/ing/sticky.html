@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2015 by lizouzt (http://jsbin.com/dayeha/4/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>freak el</title>
+<style id="jsbin-css">
+/*
+@media screen{
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+}
+*/
+ul,li,ol{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+   background-color: lightblue;
+}
+
+ul{
+  margin: 40px auto;
+  padding-left: 64px;
+  width: 220px;
+}
+li{
+  background-color: yellowgreen;
+  border-radius: 4px;
+  box-shadow: 0 0 4px 1px #efefef;
+  counter-increment:section;
+  height: 220px;
+  margin-bottom: 12px;
+  width: 100%;
+}
+li:before{
+  content:counter(section);
+  background-color: #cacaca;
+  border-radius: 2px;
+  box-shadow: 0 0 2px 1px #efefef;
+  color: #fff;
+  display: block;
+  font: 100 42px/52px Arial,Helvetica,sans-serif;
+  margin-left: -64px;
+  overflow: hidden;
+  position: -webkit-sticky;
+  position: -moz-sticky;
+  position: -ms-sticky;
+  position: sticky;
+  top: 12px;
+  text-align: center;
+  text-shadow: 1px 2px 2px #aaa;
+  white-space: nowrap;
+  width: 52px;
+  zoom: 1;
+}
+li.fixed:before{
+  position: fixed;
+}
+</style>
+</head>
+<body>
+  <ul>
+    <li></li>
+    <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+  </ul>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script>
+<script type="text/javascript">
+;(function($) {
+    
+    // inview
+    $.fn.inView = function(distance) {
+
+        var st = $(window).scrollTop(),
+            distance = distance || 0,
+            offset = $(this).offset(), 
+            stop = offset['top'],
+            bottom = stop + offset['height'],
+            vh = window.innerHeight;
+
+        return (stop >= st-distance && stop <= st + vh+distance)||(bottom >= st-distance && bottom <= st + vh+distance);
+    };
+
+    $.fn.inTop = function(offset) {
+      offset = offset || 0;
+      var rect = this[0].getBoundingClientRect();
+      return rect.top < offset && rect.top > -rect.height;
+    }
+
+    var stickies = [],allstickies = [],
+        bound,
+        timer;
+
+    $.fn.sticky = function() {
+
+        // 合并数组
+        stickies = stickies.concat(this.slice(0));
+        allstickies = allstickies.concat(this.slice(0));
+
+
+        // 检测
+        function detect() {
+
+            var len = stickies.length, i = len - 1;
+
+            for (; i >=0; i--) {
+
+                var el = stickies[i];
+
+                if ($(el).inTop(10)) {
+                  $(el).addClass('fixed');
+                  stickies.splice(i, 1);
+                }
+            }
+        }
+
+        function remove() {
+
+            var len = allstickies.length, i = len - 1;
+
+            for (; i >=0; i--) {
+
+                var el = allstickies[i],$el = $(el);
+
+                if (!$el.inTop(10)) {
+
+                    if ($el.hasClass('fixed')) {
+                      $el.removeClass('fixed');
+                    }
+
+                    stickies = stickies.concat(el);
+                }
+            }
+        }
+
+        // first    
+        detect();
+
+        if(!bound) {
+            bound = true;
+            $(window).on('scroll resize', function() {
+
+                if (!timer) {
+
+                    timer = setTimeout(function() {
+
+                        timer = null;
+
+                        detect();
+                        remove();
+                        
+                    }, 250);
+
+                }
+                
+            });
+            var timer1;
+            $(window).on('touchend', function() {
+
+                if (!timer1) {
+
+                    timer1 = setTimeout(function() {
+
+                        timer1 = null;
+
+                        detect();
+                        remove();
+                        
+                    }, 250);
+
+                }
+                
+            });
+        }
+
+    };
+    
+})(Zepto);
+
+$('li').sticky();
+</script>
+</html>
