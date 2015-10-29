@@ -13,7 +13,7 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
         var _configure = {
             data: {},
             // 开发环境域名，可通过config配置
-            proHost: 'codoon.com',
+            proHost: 'jsonohyeah.com',
         };
         var _onerror = null, _context = null;
 
@@ -135,6 +135,9 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
     })();
 
     var ajax = (function(){
+        /*
+        * response handler
+        * */
         var stateChange = function(){
             if(this.readyState == 4){
                 if(this.status == 200 || this.state == 304){
@@ -159,6 +162,26 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
                     this.failback({'status': {"msg": this.status, "code": 1}});
                 }
             }
+        },
+        /*
+        * set credentials
+        * @param  {Object} xhr
+        * @param  {Object} param
+        * @return {object} xhr
+        * */
+        setCredentials = function (xhr, param) {
+            if (/api\.codoon\.com/.test(xhr.url)) {
+                try{
+                    xhr.withCredentials = true;
+                } catch (e) { console.error(e)} 
+            }
+            if (typeof(param.withCredentials) != 'undefined') {
+                try{
+                    xhr.withCredentials = param.withCredentials;;
+                } catch (e) { console.error(e)} 
+            }
+
+            return xhr;
         };
         
         return function(param){
@@ -187,18 +210,6 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
             xhr.failback = !!param.error ? param.error : function(){};
             xhr.result = "";
             xhr.onreadystatechange = stateChange;
-
-            xhr.open(xhr.method, xhr.url, xhr.async);
-            if (/api\.codoon\.com/.test(xhr.url)) {
-                try{
-                    xhr.withCredentials = true;
-                } catch (e) { console.error(e)} 
-            }
-            if (typeof(param.withCredentials) != 'undefined') {
-                try{
-                    xhr.withCredentials = param.withCredentials;;
-                } catch (e) { console.error(e)} 
-            }
             
             if(xhr.method.toUpperCase() == "POST"){
                 var data = xhr.data.constructor == Object ? JSON.stringify(xhr.data) : xhr.data;
@@ -208,6 +219,8 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
                     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 }
 
+                xhr.open(xhr.method, xhr.url, xhr.async);
+                setCredentials(xhr, param);
                 xhr.send(data);
             }else{
                 if(!!xhr.data){
@@ -217,12 +230,14 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
                         for(key in data)
                             s += key + '=' + data[key] + '&';
 
-                        xhr.url += s;
+                        xhr.url += s.slice(0, -1);
                     }else{
                         data = data.toString();
                         xhr.url += flag ? data : ('?' + data);
                     }
                 }
+                xhr.open(xhr.method, xhr.url, xhr.async);
+                setCredentials(xhr, param);
                 xhr.send(null);
             }
         }
