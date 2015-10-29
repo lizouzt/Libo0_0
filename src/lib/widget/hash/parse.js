@@ -1,5 +1,7 @@
 define(function(){
-    return (function (hash) {
+    var hash = /\#\!/.test(window.location.hash) ? window.location.hash.match(/\#\!(.+)/)[0] : "";
+    /\?/.test(hash) && (hash = hash.replace(/\?.*/, ''));
+    return (function () {
         var obj = {};
         if (hash.indexOf("#!" == 0)) {
             hash = hash.substring(2);
