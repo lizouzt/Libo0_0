@@ -11,8 +11,9 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
         *环境配置变量
         **/
         var _configure = {
+            data: {},
             // 开发环境域名，可通过config配置
-            proHost: 'online.com',
+            proHost: 'codoon.com',
         };
         var _onerror = null, _context = null;
 
@@ -20,7 +21,7 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
         * 检索地址
         * @param {Object} opt
         */
-        fetchURL = function(opt){
+        var fetchURL = function(opt){
             var api = bucket[opt.api] || null, err = null;
             
             if (!api) {
@@ -73,7 +74,7 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
                 }
                 */
                 if ('proHost' in options && !options.proHost) delete options.proHost;
-                $.extend(_configure, options);
+                _.extend(_configure, options);
                 return true;
             },
             /*
@@ -94,10 +95,10 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
                 _context = options.context || null;
 
                 //默认获取请求方式req: get, res: json
-                var params = $.extend({type: options.type, dataType: options.dataType}, _configure);
-                params.data = $.extend({}, _configure.data, options.data);
+                var params = _.extend({type: options.type, dataType: options.dataType}, _configure);
+                params.data = _.extend({}, _configure.data, options.data);
                 //先支持http方式
-                if (!options.api.indexOf('http') == -1) {
+                if (options.api.indexOf('http') != -1) {
                     params.url = encodeURI(options.api);
                 } else {
                     params.url = fetchURL(options);
@@ -105,12 +106,11 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
                     // else params.url = params.url.replace(/(^\/\/)/, window.location.protocol+'//');
                 }
 
-                // post\put\update方式
-                // 兼容beego
+                //post\put\update方式
+                //兼容beego
                 if (params.type !== 'GET') {
                     params.data = JSON.stringify(params.data);
                 }
-                
 
                 //统一失败回调入口
                 params.error = function(xhr, info, err){
@@ -129,10 +129,105 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
                     !!success && success.apply(_context, arguments);
                 }
 
-                $.ajax($.extend(options, params));
+                lib.ajax(_.extend(options, params));
             }
         }
     })();
 
+    var ajax = (function(){
+        var stateChange = function(){
+            if(this.readyState == 4){
+                if(this.status == 200 || this.state == 304){
+                    if(this.responseText){
+                        try{
+                            if(this.resFormat != "text"){
+                                var str = JSON.parse(this.responseText);
+                            }else{
+                                var str = this.responseText;
+                            }
+                        }catch(e){
+                            console.log(e.message);
+                            this.failback({'status': {"msg": e.message, "code": 1}});
+                        }
+                        this.callback(str);
+                    }else{
+                        console.log("response empty");
+                        this.failbackthis.failback({'status': {"msg": "response empty", "code": 1}});
+                    }
+                }else{
+                    console.log(this.status);
+                    this.failback({'status': {"msg": this.status, "code": 1}});
+                }
+            }
+        };
+        
+        return function(param){
+            var xhr = null;
+            try{
+                xhr = new XMLHttpRequest();
+            }catch(e){
+                try{
+                    xhr = new ActiveXObject("MSXML2.XMLHTTP");
+                }catch(e){
+                    try{
+                        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                    }catch(e){
+                        xhr = null;
+                    }
+                }
+            }
+            
+            xhr.method = !!param.type ? param.type : 'GET';
+            xhr.url = !!param.url ? param.url : "";
+            xhr.async = !!param.async ? param.async : true;
+            xhr.data = !!param.data ? param.data : "";
+            xhr.resFormat = !!param.format ? param.format : "json";
+            xhr.cType = !!param.contentType ? param.contentType : "";
+            xhr.callback = !!param.success ? param.success : function(){};
+            xhr.failback = !!param.error ? param.error : function(){};
+            xhr.result = "";
+            xhr.onreadystatechange = stateChange;
+
+            xhr.open(xhr.method, xhr.url, xhr.async);
+            if (/api\.codoon\.com/.test(xhr.url)) {
+                try{
+                    xhr.withCredentials = true;
+                } catch (e) { console.error(e)} 
+            }
+            if (typeof(param.withCredentials) != 'undefined') {
+                try{
+                    xhr.withCredentials = param.withCredentials;;
+                } catch (e) { console.error(e)} 
+            }
+            
+            if(xhr.method.toUpperCase() == "POST"){
+                var data = xhr.data.constructor == Object ? JSON.stringify(xhr.data) : xhr.data;
+                if (!!xhr.cType)
+                    xhr.setRequestHeader("Content-Type", xhr.cType);
+                else if (xhr.data.constructor == Object) {
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                }
+
+                xhr.send(data);
+            }else{
+                if(!!xhr.data){
+                    var flag = /\?/.test(xhr.url), data = xhr.data;
+                    if(data.constructor == Object){
+                        var s = flag ? '' : '?';
+                        for(key in data)
+                            s += key + '=' + data[key] + '&';
+
+                        xhr.url += s;
+                    }else{
+                        data = data.toString();
+                        xhr.url += flag ? data : ('?' + data);
+                    }
+                }
+                xhr.send(null);
+            }
+        }
+    })();
+    
     lib.api = API;
+    lib.ajax = ajax;
 });
