@@ -13,7 +13,7 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
         var _configure = {
             data: {},
             // 开发环境域名，可通过config配置
-            proHost: 'jsonohyeah.com',
+            proHost: 'online.com',
         };
         var _onerror = null, _context = null;
 
@@ -27,7 +27,7 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
             if (!api) {
                 err = "未知API";
             } else {
-                if (api.methods.join(',').indexOf(opt.type.toUpperCase()) == -1) {
+                if (api.methods.join(',').toUpperCase().indexOf(opt.type.toUpperCase()) == -1) {
                     err = "方法错误: " + opt.type;
                 }
 
@@ -108,7 +108,7 @@ define(['lib/utils/api-bucket','lib/utils/utils'], function(bucket){
 
                 //post\put\update方式
                 //兼容beego
-                if (params.type !== 'GET') {
+                if (params.type.toUpperCase() !== 'GET') {
                     params.data = JSON.stringify(params.data);
                 }
 
