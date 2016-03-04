@@ -57,9 +57,9 @@
     if ("_" in window) {
       for (var k in b) {
         if ( $.isObj(b[k]) )
-          arguments.callee(a[k], b[k]);
+          a[k] ? arguments.callee(a[k], b[k]) : a[k] = b[k];
         else 
-          (a[k] = b[k]);
+          a[k] = b[k];
       }
       return a
     }
