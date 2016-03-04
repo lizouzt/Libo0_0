@@ -7,6 +7,7 @@ wipe.init({
     wapperEl: document.body,
     tarEl: document.getElementById('ul'),
     needTransition: true,
+    needLoop: true,
     wipeRight: function(obj){
         return obj.dis;
     },
@@ -29,17 +30,19 @@ define(function(){
       dx: 0,
       dy: 0
     },
-    CLIENTHEIGHT = document.documentElement.clientHeight,
-    CLIENTWIDTH = document.documentElement.clientWidth,
-    _curWipe = '',
-    _starttimer = null,
-    _wapperEl = null,
-    _contentEl = null;
+    CLIENTHEIGHT  = document.documentElement.clientHeight,
+    CLIENTWIDTH   = document.documentElement.clientWidth,
+    LOOPTIMER     = 3000,
+    _curWipe      = '',
+    _starttimer   = null,
+    _wapperEl     = null,
+    _contentEl    = null,
+    _isUserHandleActive = false;
 
     var options = {
-      mindis: 100,
+      mindis: 60,
       minsec: 50,
-      prefixList: ['-webkit-','-moz-','-ms-','-o-']
+      prefixList: ['-webkit-','-ms-']
     };
 
     var _fn_rollback = function(timer){
@@ -67,6 +70,7 @@ define(function(){
     onTouchStart = function(e){
       var target = e.target;
       if(target.dataset['wipe'] != 'ignore'){
+        _isUserHandleActive = true;
         _starttimer = e.timeStamp;
         params.startX = e.touches[0].pageX;
         params.startY = e.touches[0].pageY;
@@ -97,9 +101,9 @@ define(function(){
         var ret = options.wipeRight ? 0 : params.dx;
         var obj = {dis: params.dx, time: timer};
         if(params.dx > 0){
-          options.wipeRight && (ret = options.wipeRight(obj))
+          options.wipeRight ? (ret = options.wipeRight(obj)) : options.rollback(timer);
         }else{
-          options.wipeLeft && (ret = options.wipeLeft(obj))
+          options.wipeLeft ? (ret = options.wipeLeft(obj)) : options.rollback(timer);
         }
         return ret
       },
@@ -107,9 +111,9 @@ define(function(){
         var ret = options.wipeDown ? 0 : params.dy;
         var obj = {dis: params.dy, time: timer};
         if(params.dy > 0){
-          options.wipeDown && (ret = options.wipeDown(obj));
+          options.wipeDown ? (ret = options.wipeDown(obj)) : options.rollback(timer);
         }else{
-          options.wipeUp && (ret = options.wipeUp(obj));
+          options.wipeUp ? (ret = options.wipeUp(obj)) : options.rollback(timer);
         }
         return ret
       },
@@ -129,11 +133,15 @@ define(function(){
       }
     },
 
+    clearHandlerStateTimer = null,
     cancelTouch = function(){
         params.startY = params.startX = params.dx = params.dy = 0;
-
         _starttimer = null;
         _curWipe = 0;
+        clearHandlerStateTimer = setTimeout(function () {
+          clearHandlerStateTimer && clearTimeout(clearHandlerStateTimer);
+          !_starttimer && (_isUserHandleActive = false);
+        }, 600);
     },
     setPrefixStyle = function(str){
         var val = str;
@@ -154,7 +162,6 @@ define(function(){
           break;
         case 'webkitTransitionEnd', 'transitionEnd', 'mozTransitionEnd', 'msTransitionEnd':
           options.clearTransition(e);
-          console.log('clear');
           break;
       }
     };
@@ -162,8 +169,8 @@ define(function(){
       init: function(opt){
         if(!opt) var opt = {};
 
-        _wapperEl = opt.wapperEl;
-        _contentEl = opt.tarEl;
+        _wapperEl     = opt.wapperEl;
+        _contentEl    = opt.tarEl;
         _contentEl.dy = _contentEl.dx = 0;
 
         for( k in opt){
@@ -178,7 +185,14 @@ define(function(){
         _wapperEl.addEventListener('touchend', handleEvent, false);
         _wapperEl.addEventListener('webkitTransitionEnd', handleEvent, false);
         _wapperEl.addEventListener('transitionEnd', handleEvent, false);
+
+        if (options.needLoop) {
+          setInterval(function() {
+            !_isUserHandleActive && endHandler['dx'](0);
+          }, LOOPTIMER);
+        }
       }
     };
   }();
+  return wipe;
 });
