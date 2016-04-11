@@ -9,7 +9,7 @@ wipe.init({
     needTransition: true,
     needLoop: true,
     wipeRight: function(obj){
-        return obj.dis;
+        return obj.dis; //反馈实际位置便宜量
     },
     wipeLeft: function(obj){
         return obj.dis;
@@ -82,8 +82,8 @@ var wipe = function(){
     e.preventDefault();
     e.stopPropagation();
 
-    params.dx = e.touches[0].clientX - params.startX;
-    params.dy = e.touches[0].clientY - params.startY;
+    params.dx = e.touches[0].pageX - params.startX;
+    params.dy = e.touches[0].pageY - params.startY;
 
     if(!_curWipe){
       var adx = Math.abs(params.dx), ady = Math.abs(params.dy);
