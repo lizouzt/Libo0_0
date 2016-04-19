@@ -6,10 +6,10 @@
 wipe.init({
     wapperEl: document.body,
     tarEl: document.getElementById('ul'),
-    needTransition: true,
-    needLoop: true,
+    needTransition: true,                 //turn on touchmove transition
+    needLoop: true,                       //turn on auto gallery loop
     wipeRight: function(obj){
-        return obj.dis; //反馈实际位置便宜量
+        return obj.dis;                   //valid transition offset
     },
     wipeLeft: function(obj){
         return obj.dis;
@@ -36,7 +36,12 @@ var wipe = function(){
   _starttimer   = null,
   _wapperEl     = null,
   _contentEl    = null,
-  _isUserHandleActive = false;
+  _enabled      = true,
+  _isUserHandleActive = false,
+  HANDLER       = {};
+
+  HANDLER.dx    = false;
+  HANDLER.dy    = false;
 
   var options = {
     mindis: 60,
@@ -68,7 +73,7 @@ var wipe = function(){
 
   onTouchStart = function(e){
     var target = e.target;
-    if(target.dataset['wipe'] != 'ignore'){
+    if(target.dataset['wipe'] != 'ignore' && _enabled){
       _isUserHandleActive = true;
       _starttimer = e.timeStamp;
       params.startX = e.touches[0].pageX;
@@ -79,8 +84,6 @@ var wipe = function(){
   onTouchMove = function(e){
     if(!_starttimer)
       return
-    e.preventDefault();
-    e.stopPropagation();
 
     params.dx = e.touches[0].pageX - params.startX;
     params.dy = e.touches[0].pageY - params.startY;
@@ -92,7 +95,12 @@ var wipe = function(){
         _curWipe = hm ? 'dx' : 'dy';
       };
     }
-    !!_curWipe && options.needTransition && options.wipeTransition(params.dx, params.dy);
+
+    if (HANDLER[_curWipe]) {
+      e.preventDefault();
+      e.stopPropagation();
+      !!_curWipe && options.needTransition && options.wipeTransition(params.dx, params.dy);
+    }
   },
 
   endHandler = {
@@ -181,6 +189,11 @@ var wipe = function(){
       options.rollback = options.rollback || _fn_rollback;
       options.clearTransition = options.clearTransition || _fn_clearTransition;
 
+      if ('wipeRight' in options || 'wipeLeft' in options) 
+        HANDLER.dx = true;
+      if ('wipeUp' in options || 'wipeDown' in options)
+        HANDLER.dy = true;
+
       _wapperEl.addEventListener('touchstart', handleEvent, false);
       _wapperEl.addEventListener('touchmove', handleEvent, false);
       _wapperEl.addEventListener('touchend', handleEvent, false);
@@ -192,6 +205,12 @@ var wipe = function(){
           !_isUserHandleActive && endHandler['dx'](0);
         }, LOOPTIMER);
       }
+    },
+    disable: function () {
+      _enabled = false;
+    },
+    enable: function () {
+      _enabled = true;
     }
   };
 }();
