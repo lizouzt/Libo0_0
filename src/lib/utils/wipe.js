@@ -108,9 +108,9 @@ var wipe = function(){
       var ret = options.wipeRight ? 0 : params.dx;
       var obj = {dis: params.dx, time: timer};
       if(params.dx > 0){
-        options.wipeRight ? (ret = options.wipeRight(obj)) : options.rollback(timer);
+        options.wipeRight && (ret = options.wipeRight(obj));
       }else{
-        options.wipeLeft ? (ret = options.wipeLeft(obj)) : options.rollback(timer);
+        options.wipeLeft && (ret = options.wipeLeft(obj));
       }
       return ret
     },
@@ -118,9 +118,9 @@ var wipe = function(){
       var ret = options.wipeDown ? 0 : params.dy;
       var obj = {dis: params.dy, time: timer};
       if(params.dy > 0){
-        options.wipeDown ? (ret = options.wipeDown(obj)) : options.rollback(timer);
+        options.wipeDown && (ret = options.wipeDown(obj));
       }else{
-        options.wipeUp ? (ret = options.wipeUp(obj)) : options.rollback(timer);
+        options.wipeUp && (ret = options.wipeUp(obj));
       }
       return ret
     },
