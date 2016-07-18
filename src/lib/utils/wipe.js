@@ -1,15 +1,11 @@
-/*
-*created by Tao.z 2012/12/16
-**/
-
 /************************************************
 wipe.init({
     wapperEl: document.body,
     tarEl: document.getElementById('ul'),
-    needTransition: true,                 //turn on touchmove transition
-    needLoop: true,                       //turn on auto gallery loop
+    needTransition: true,
+    needLoop: true,
     wipeRight: function(obj){
-        return obj.dis;                   //valid transition offset
+        return obj.dis; //反馈实际位置便宜量
     },
     wipeLeft: function(obj){
         return obj.dis;
@@ -38,10 +34,13 @@ var wipe = function(){
   _contentEl    = null,
   _enabled      = true,
   _isUserHandleActive = false,
+  _preventClick = false;
   HANDLER       = {};
 
   HANDLER.dx    = false;
   HANDLER.dy    = false;
+
+  var SupportsTouches = ("ontouchstart" in document);
 
   var options = {
     mindis: 60,
@@ -51,7 +50,6 @@ var wipe = function(){
 
   var _fn_rollback = function(timer){
     options.wipeTransition(_contentEl.dx, _contentEl.dy);
-    console.log('rollback');
   },
 
   _fn_wipeTransition = function(x,y){
@@ -71,22 +69,43 @@ var wipe = function(){
     return val;
   },
 
-  onTouchStart = function(e){
+  getPointPositionObj = (function () {
+    return SupportsTouches ? function (e) {
+      return {
+        X: e.touches[0].pageX,
+        Y: e.touches[0].pageY
+      }
+    } : function (e) {
+      return {
+        X: e.clientX,
+        Y: e.clientY
+      }
+    }
+  })(),
+
+  onTouchStart = function (e) {
     var target = e.target;
+    _preventClick = false;
     if(target.dataset['wipe'] != 'ignore' && _enabled){
       _isUserHandleActive = true;
       _starttimer = e.timeStamp;
-      params.startX = e.touches[0].pageX;
-      params.startY = e.touches[0].pageY;
+
+      var point = getPointPositionObj(e);
+      params.startX = point.X;
+      params.startY = point.Y;
     }
   },
   
   onTouchMove = function(e){
-    if(!_starttimer)
-      return
+    if(!_starttimer) {
+      return false;
+    }
 
-    params.dx = e.touches[0].pageX - params.startX;
-    params.dy = e.touches[0].pageY - params.startY;
+    _preventClick = true;
+
+    var point = getPointPositionObj(e);
+    params.dx = point.X - params.startX;
+    params.dy = point.Y - params.startY;
 
     if(!_curWipe){
       var adx = Math.abs(params.dx), ady = Math.abs(params.dy);
@@ -136,19 +155,19 @@ var wipe = function(){
       }else{
         !!params[_curWipe] && options.rollback(timer);
       }
-      cancelTouch();
     }
+    cancelTouch();
   },
 
   clearHandlerStateTimer = null,
   cancelTouch = function(){
-      params.startY = params.startX = params.dx = params.dy = 0;
-      _starttimer = null;
-      _curWipe = 0;
-      clearHandlerStateTimer = setTimeout(function () {
-        clearHandlerStateTimer && clearTimeout(clearHandlerStateTimer);
-        !_starttimer && (_isUserHandleActive = false);
-      }, 600);
+    _isUserHandleActive && (clearHandlerStateTimer = setTimeout(function () {
+      !_starttimer && (_isUserHandleActive = false);
+    }, 600));
+
+    params.startY = params.startX = params.dx = params.dy = 0;
+    _starttimer = null;
+    _curWipe = 0;
   },
   setPrefixStyle = function(str){
       var val = str;
@@ -159,15 +178,21 @@ var wipe = function(){
   handleEvent = function(e) {
     switch (e.type) {
       case 'touchstart':
+      case 'mousedown':
         onTouchStart(e);
         break;
       case 'touchmove':
+      case 'mousemove':
         onTouchMove(e);
         break;
       case 'touchend':
+      case 'mouseup':
         onTouchEnd(e);
         break;
-      case 'webkitTransitionEnd', 'transitionEnd', 'mozTransitionEnd', 'msTransitionEnd':
+      case 'webkitTransitionEnd': 
+      case 'transitionEnd':
+      case 'mozTransitionEnd':
+      case 'msTransitionEnd':
         options.clearTransition(e);
         break;
     }
@@ -194,11 +219,26 @@ var wipe = function(){
       if ('wipeUp' in options || 'wipeDown' in options)
         HANDLER.dy = true;
 
-      _wapperEl.addEventListener('touchstart', handleEvent, false);
-      _wapperEl.addEventListener('touchmove', handleEvent, false);
-      _wapperEl.addEventListener('touchend', handleEvent, false);
+      var Events = SupportsTouches ? {
+        StartEvent: "touchstart", 
+        MoveEvent: "touchmove",
+        EndEvent: "touchend"
+      } : {
+        StartEvent: "mousedown", 
+        MoveEvent: "mousemove",
+        EndEvent: "mouseup"
+      };
+      _wapperEl.addEventListener(Events.StartEvent, handleEvent, false);
+      _wapperEl.addEventListener(Events.MoveEvent, handleEvent, false);
+      _wapperEl.addEventListener(Events.EndEvent, handleEvent, false);
       _wapperEl.addEventListener('webkitTransitionEnd', handleEvent, false);
       _wapperEl.addEventListener('transitionEnd', handleEvent, false);
+      _wapperEl.addEventListener('click', function (e) {
+        if (_preventClick) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }, false);
 
       if (options.needLoop) {
         setInterval(function() {
