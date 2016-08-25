@@ -35,12 +35,13 @@ if (window.matchMedia("(color-gamut: p3)").matches) {
 * border-image
 * break-after、break-before、break-inside
 * image-rendering
-  ```
-  img[src$=".gif"], img[src$=".png"] {
-     image-rendering: -moz-crisp-edges;         /* Firefox */
-     image-rendering:   -o-crisp-edges;         /* Opera */
-     image-rendering: -webkit-optimize-contrast;/* Webkit (non-standard naming) */
-     image-rendering: crisp-edges;
-     -ms-interpolation-mode: nearest-neighbor;  /* IE (non-standard property) */
-   }
-  ```
+
+```
+img[src$=".gif"], img[src$=".png"] {
+   image-rendering: -moz-crisp-edges;         /* Firefox */
+   image-rendering:   -o-crisp-edges;         /* Opera */
+   image-rendering: -webkit-optimize-contrast;/* Webkit (non-standard naming) */
+   image-rendering: crisp-edges;
+   -ms-interpolation-mode: nearest-neighbor;  /* IE (non-standard property) */
+ }
+```
