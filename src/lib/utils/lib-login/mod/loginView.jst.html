@@ -1,23 +1,54 @@
+<div class="llv-bg"></div>
 <div id="j-l-l-view" class="l-l-view <%= obj.hideBG ? 'nobg' : '' %>">
+    <div class="lv-ctrl">
+        <a class='lvc-l hide'>登录</a>
+        <a class='lvc-r'>注册</a>
+    </div>
+
+    <div class="llv-title">
+        <div class="llvt-w">
+            <h3>I Got Movie.</h3>
+            <p>为你的所爱而来。</p>
+            <p>为你的发现停留。</p>
+        </div>
+    </div>
+
+    <div class="llv-reg negative">
+        <form name=regist[form]>
+            <div class="llv-row">
+                <input type="wtf" placeholder="账号" name="regist[name]" required="required" autocapitalize="off" autocorrect="off" autocomplete="off" maxlength=20>
+            </div>
+            <div class="llv-row">
+                <input type="wtf" placeholder="密码" name="regist[pwd]" required="required" autocapitalize="off" autocorrect="off" autocomplete="off" maxlength=20>
+            </div>
+            <div class="llv-row">
+                <input type="wtf" placeholder="给自己取个昵称" name="regist[nick]" required="required" autocapitalize="off" autocorrect="off" autocomplete="off" maxlength=20>
+            </div>
+            <div class="llv-tips">...</div>
+            <button class="llv-submit" type="submit">
+                <span class="btn-login">注册</span>
+                <span class="llv-licon">loading......</span>
+            </button>
+        </form>
+    </div>
+
     <div class="llv-wrapper">
-        <form name="login[form]" method= action="/login">
+        <form name="login[form]">
             <!--内容区-->
-            <div class="llv-shadow">
-                <div class="llv-row">
-                    <input type="text" placeholder="用户" name="login[name]" required="required" autocapitalize="off" autocorrect="off" autocomplete="off">
-                </div>
-                <div class="llv-row">
-                    <input type="text" placeholder="密码" name="login[pwd]" required="required" autocapitalize="off" autocorrect="off" autocomplete="off">
-                    <input type="hidden" name="login[hide]">
-                </div>
+            <div class="llv-row">
+                <input type="wtf" placeholder="用户名" name="login[name]" required="required" autocapitalize="off" autocorrect="off">
             </div>
+            <div class="llv-row">
+                <input type="text" placeholder="密码" name="login[pwd]" required="required" autocapitalize="off" autocorrect="off" autocomplete="off">
+                <input type="hidden" name="login[hide]">
+            </div>
+            <!--提示-->
+            <div class="llv-tips">...</div>
             <!--按钮区-->
-            <div class="llv-shadow">
-                <button class="llv-submit" type="submit">
-                    <span class="btn-login">登录</span>
-                </button>
-                <div class="llv-tips">xxxxxx</div>
-            </div>
+            <button class="llv-submit" type="submit">
+                <span class="btn-login">登录</span>
+                <span class="llv-licon">loading......</span>
+            </button>
         </form>
     </div>
 </div>
