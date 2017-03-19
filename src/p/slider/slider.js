@@ -1,4 +1,4 @@
-;(function(win,lib){
+define(['c/widget/wipe/wipe'], function (wipe) {
     var Slider = function(opts){
         var wipeEL = opts.arrEL,
             wrapperEL = opts.wrapperEL,
@@ -6,30 +6,28 @@
             cardCName = opts.cardCName,
             qstr = '.'+cardCName,
             _isDuration = true,
-            TRANX = 70,
+            TRANX = 111,
             TRANZ = -40,
             SCALE = 0.1,
-            ROTATEY = 65,
-            SKEWY = 12,
-            TRANTPL = 'scale(@{scale}, @{scale}) translate3d(@{tranx}%,0,@{tranz}px) rotateY(@{rotatey}deg) skewY(@{skewy}deg)';
+            TRANTPL = 'scale(@{scale}, @{scale}) translate3d(@{tranx}%,0,@{tranz}px)';
 
         var el_p = el_n = el_t = null;
         var _tLeft = _tRight = false;
 
-        var STYLE_NEXT = '-webkit-transform: scale('+(1-SCALE)+') translate3d('+TRANX+'%, 0, '+TRANZ+'px) rotateY(-'+ROTATEY+'deg) skewY('+SKEWY+'deg);',
-            STYLE_PREV = '-webkit-transform: scale('+(1-SCALE)+') translate3d(-'+TRANX+'%, 0, '+TRANZ+'px) rotateY('+ROTATEY+'deg) skewY(-'+SKEWY+'deg);';
+        var STYLE_NEXT = '-webkit-transform: scale('+(1-SCALE)+') translate3d('+TRANX+'%, 0, '+TRANZ+'px)',
+            STYLE_PREV = '-webkit-transform: scale('+(1-SCALE)+') translate3d(-'+TRANX+'%, 0, '+TRANZ+'px)';
 
         var cardList = wipeEL.querySelectorAll(qstr);
             el_cur = cardList[opts.activeCardSeq], 
-            el_prev = cardList[opts.activeCardSeq - 1] || cardList.slice(-1), 
-            el_next = cardList[opts.activeCardSeq + 1] || cardList[0];
+            el_prev = cardList[(cardList.length + (opts.activeCardSeq - 1))% cardList.length] || cardList.slice(-1), 
+            el_next = cardList[(cardList.length + (opts.activeCardSeq + 1))% cardList.length] || cardList[0];
         el_cur.classList.add('active');
         el_prev.classList.add('prev-s');
         el_next.classList.add('next-s');
         
         var setExtraProperty = function(){
-            el_next.tranx = TRANX, el_next.scale = (1-SCALE), el_next.rotatey = -ROTATEY, el_next.skewy = SKEWY;
-            el_prev.tranx = -TRANX, el_prev.scale = (1-SCALE), el_prev.rotatey = ROTATEY, el_prev.skewy = -SKEWY;
+            el_next.tranx = TRANX, el_next.scale = (1-SCALE);
+            el_prev.tranx = -TRANX, el_prev.scale = (1-SCALE);
         },
 
         setImage = function(el){
@@ -37,8 +35,8 @@
             _img.setAttribute('src', _img.dataset['lazyload']);
         },
 
-        render = function(el, tranx, tranz, scale, rotatey, skewy){
-            var style = TRANTPL.replace(/\@\{scale\}/gi, scale).replace(/\@\{tranx\}/i, tranx).replace(/\@\{tranz\}/i, tranz).replace(/\@\{rotatey\}/i, rotatey).replace(/\@{skewy}/i, skewy);
+        render = function(el, tranx, tranz, scale){
+            var style = TRANTPL.replace(/\@\{scale\}/gi, scale).replace(/\@\{tranx\}/i, tranx).replace(/\@\{tranz\}/i, tranz);
             el.style.webkitTransform = style;
             return 1;
         },
@@ -56,50 +54,34 @@
 
                 ret = {t: -1, r: 1, s: -1};
             } else if(x > 0) {
-                // if(!_tRight || el_p != el_next){
-                //     _tRight = true;
-                //     el_t = el_prev.previousElementSibling || wipeEL.querySelector(qstr+':last-child');
-                //     setImage(el_t);
-                //     el_t.classList.add('prev-hold');
-                // }
-
                 el_p = el_next;
                 el_n = el_prev;
-
                 ret = {t: 1, r: -1, s: 1};
             }
 
             return ret;
         },
-
+// rotatey
+// skewy
         animateHandler = function(args){
             var x = args[0] > 320 ? 320 : args[0];
             var _proto = Math.abs(x) / DOMVW,
                 _proto = _proto > 1 ? 1 : _proto;
                 tranx = (TRANX * _proto).toFixed(0),
                 tranz = (TRANZ * _proto).toFixed(0),
-                scale = 1*((SCALE * _proto).toFixed(2)),
-                rotatey = (ROTATEY * _proto).toFixed(0),
-                skewy = _proto * SKEWY;
+                scale = 1*((SCALE * _proto).toFixed(2));
 
             flag = getFlag(x);
             _isDuration ? wipeEL.classList.remove('nduring') : wipeEL.classList.add('nduring');
-            render(el_cur, tranx*flag.t, tranz, (1-scale), rotatey*flag.r, skewy*flag.s);
+            render(el_cur, tranx*flag.t, tranz, (1-scale));
             if(!!el_p ){
                 render_opacity(el_p, (1-_proto));
-                render(el_n, (el_n.tranx + tranx*flag.t), TRANZ-tranz, (el_n.scale + scale), (el_n.rotatey + rotatey*flag.r), el_n.skewy + skewy*flag.s);
+                render(el_n, (el_n.tranx + tranx*flag.t), TRANZ-tranz, (el_n.scale + scale));
             }
         };
 
         var init = function(){
-            var _h = [];
-            for (var i=0, j=wipeEL.querySelectorAll(qstr).length; i<j; i+=1) {
-                _h.push('<span class="' + ((i == 0) ? 'sel': '') + '"></span>');
-            }
-            wrapperEL.querySelector('.slider-nav').innerHTML = _h.join('');
-
             setExtraProperty();
-
             wipe.init({
                 wapperEl: wrapperEL,
                 tarEl: wipeEL,
@@ -168,5 +150,5 @@
         };
         init();
     };
-    lib.Slider = Slider;
-})(window, window.lib || (window.lib = {}));
+    return Slider;
+});

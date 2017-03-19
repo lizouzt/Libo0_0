@@ -1,13 +1,14 @@
 define(function (require) {
-    return {
+    var hash = /\#\!/.test(window.location.hash) ? window.location.hash.match(/\#\!(.+)/)[1] : "";
+        /\?/.test(hash) && (hash = hash.replace(/\?.*/, ''));
+    return
         /**
          * 获取
          * @param  {[type]} key [description]
          * @return {[type]}     [description]
          */
-        get : function(key){
-            var url = window.location.hash;
-            var p = url.substring(2,url.length).split('&');
+        function (key) {
+            var p = hash.split('&');
             var result = '';
             for(var i=0,len=p.length;i<len;i++){
                 var obj = p[i].split('=');
@@ -18,5 +19,4 @@ define(function (require) {
             }
             return result;
         }
-    };
 });
