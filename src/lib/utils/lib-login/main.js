@@ -245,7 +245,7 @@
                         },
                         error: function (obj) {
                             _.negativeCls(el_btn, 'posting');
-                            showFailTips(obj.status.msg || '注册失败请重试！', el_tips);
+                            showFailTips(obj.status.msg || '登录失败请重试！', el_tips);
                         }
                     });
                 }
