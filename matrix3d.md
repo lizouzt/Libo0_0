@@ -1,4 +1,9 @@
 ## matrix(n,n,n,n,n,n,n,n,n,n,n,n,n,n,n,n)的值及其说明
+
+* translate3d(tx,ty,tz)等价于matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,tx,ty,tz,1)
+* scale3d(sx,sy,sz)等价于matrix3d(sx,0,0,0,0,sy,0,0,0,0,sz,0,0,0,0,1)
+* rotate3d(x,y,z,a)真是得搬出高中数学书好好复习一下了，第四个参数alpha用于sc和sq中
+
 函数|值的说明
 ```
 只有X轴上的旋转，没有扩大缩小、平移
